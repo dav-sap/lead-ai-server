@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === "development") {
     PASS = config.DB_SERVER.DB_PASS;
     URL = config.DB_SERVER.SERVER_URL;
 }
+console.log('mongodb://' + USER + ':' + PASS + '@' + URL);
 mongoose.connect('mongodb://' + USER + ':' + PASS + '@' + URL);
 var app = express();
 
