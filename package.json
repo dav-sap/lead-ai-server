@@ -1,0 +1,29 @@
+{
+  "name": "react-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "debug": "cross-env NODE_ENV=development nodemon ./StartServer.js",
+    "start": "cross-env NODE_ENV=production node ./StartServer.js"
+  },
+  "dependencies": {
+    "async": "^2.6.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "data-tree": "^1.2.4",
+    "debug": "~2.6.9",
+    "express": "~4.15.5",
+    "gridfs-stream": "^1.1.1",
+    "jade": "~1.11.0",
+    "mongoose": "^4.13.4",
+    "mongoose-validators": "^0.1.0",
+    "morgan": "~1.9.0",
+    "multer": "^1.3.0",
+    "multer-gridfs-storage": "^2.1.0",
+    "serve-favicon": "~2.4.5"
+  },
+  "devDependencies": {}
+}
