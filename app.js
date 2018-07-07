@@ -18,6 +18,10 @@ if (process.env.NODE_ENV === "development") {
     USER = config.DB_SERVER.DB_USER;
     PASS = config.DB_SERVER.DB_PASS;
     URL = config.DB_SERVER.SERVER_URL;
+} else {
+    USER = process.env.DB_SERVER.DB_USER;
+    PASS = process.env.DB_SERVER.DB_PASS;
+    URL = process.env.DB_SERVER.SERVER_URL;
 }
 mongoose.connect('mongodb://' + USER + ':' + PASS + '@' + URL);
 var app = express();
