@@ -14,12 +14,12 @@ let USER = null;
 let PASS = null;
 let URL = null;
 if (process.env.NODE_ENV === "development") {
-    var config = require('./config/development.json')
+    let config = require('./config/development.json')
     USER = config.DB_SERVER.DB_USER;
     PASS = config.DB_SERVER.DB_PASS;
     URL = config.DB_SERVER.SERVER_URL;
 } else {
-    var config = require('./config/production.json')
+    let config = require('./config/production.json')
     USER = config.DB_SERVER.DB_USER;
     PASS = config.DB_SERVER.DB_PASS;
     URL = config.DB_SERVER.SERVER_URL;
