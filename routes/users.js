@@ -1,7 +1,10 @@
-var express = require('express');
-var router = express.Router();
-var users = require('./../db/users.js');
-var consultants = require('./../db/consultants');
+import {isBudget} from './../src/Bot'
+import {getNextStage} from "../src/Bot";
+const express = require('express');
+const router = express.Router();
+const users = require('./../db/users.js');
+const consultants = require('./../db/consultants');
+
 // var photographers = require('./../db/photographers');
 
 // router.post('/referenced_user', function (req, res, next) {
@@ -63,9 +66,7 @@ router.post('/remove_user', function (req, res, next) {
         res.status.send(500)({error: "User not removed!", info: err.message})
     })
 });
-// router.get('/bot_logic', function (req, res, next) {
-//     res.send({bot:BOT_LOGIC})
-// });
+
 router.post('/add_user', function (req, res, next) {
     let userJson = req.body;
     let startDate = new Date();
@@ -76,26 +77,24 @@ router.post('/add_user', function (req, res, next) {
     })
 
 });
+
 router.post('/add_chat_answer', function (req, res, next) {
     let userJson = req.body;
     users.findOne({_id: userJson._id})
-        .then((user) => {
-            if (!user) throw "No user found";
-            let indexToAdd = null;
-            user.chat.find((val, index) => {
-                let dateFromReq = new Date(userJson.startDate);
-                if(val.date.getTime() === dateFromReq.getTime()) {
-                    indexToAdd = index;
-                    return true;
-                }
-            });
-            if (indexToAdd !== null) {
-                user.chat[indexToAdd].data.push({question: userJson.question, answer: userJson.answer});
-                user.save((user) => {
-                    res.send({info: "User Found and question answer added"})
-                })
-            } else throw "No chat matching attribs found";
+        .then(user => {
+			if (!user) {
+				let startDate = new Date();
+				return users.create({name: userJson.answer, chat: {data: [], date: startDate}})
+			}
+		}).then(newUser => {
+			if (newUser) {
+				isBudget.name = newUser.name;
+				res.send({info: "New User Saved!", newUser: newUser, stage: isBudget})
+			} else {
+				res.send({info: "Answer submitted", stage: getNextStage(userJson.question, userJson.answer)})
+			}
         }).catch(err => {
+        	console.error(err.toString());
             res.status(500).send({error: "Chat Answer not added", info: err.toString()})
         })
 });
