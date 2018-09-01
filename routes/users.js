@@ -1,4 +1,3 @@
-import {isBudget} from './../src/Bot'
 import {getNextStage} from "../src/Bot";
 const express = require('express');
 const router = express.Router();
@@ -79,19 +78,16 @@ router.post('/add_user', function (req, res, next) {
 });
 
 router.post('/add_chat_answer', function (req, res, next) {
-    let userJson = req.body;
-    users.findOne({_id: userJson._id})
+    let reqBody = req.body;
+    users.findOneAndUpdate({_id: reqBody._id}, {$push: {'chat.data': {question: reqBody.question, answer: reqBody.answer.value}}})
         .then(user => {
 			if (!user) {
 				let startDate = new Date();
-				return users.create({name: userJson.answer, chat: {data: [], date: startDate}})
-			}
-		}).then(newUser => {
-			if (newUser) {
-				isBudget.name = newUser.name;
-				res.send({info: "New User Saved!", newUser: newUser, stage: isBudget})
+				users.create({name: reqBody.answer.value, chat: {data: [], date: startDate}}).then(newUser => {
+					res.send({info: "Answer submitted", newUser: newUser, stage: getNextStage(reqBody.question, reqBody.answer)})
+				})
 			} else {
-				res.send({info: "Answer submitted", stage: getNextStage(userJson.question, userJson.answer)})
+				res.send({info: "Answer submitted", user: user, stage: getNextStage(reqBody.question, reqBody.answer)})
 			}
         }).catch(err => {
         	console.error(err.toString());

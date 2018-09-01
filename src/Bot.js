@@ -1,8 +1,10 @@
-
 const INPUT = "input";
 const NAME = "name";
+const PHONE = "phone";
 const OPTIONS = "options";
 const RADIO_OPTIONS = "radio_options";
+const COMPLETED = "completed"
+let name = ""
 
 function getHelloString() {
 	let today = new Date().getHours();
@@ -20,17 +22,15 @@ function getHelloString() {
 	return start + end;
 }
 let isBudget = {
-	name: "",
-	getName: true,
 	get question() {
 		let start = "נעים מאוד"
-		let name = " " + this.name.split(" ")[0] + " ";
+		let newName = " " + name.split(" ")[0] + " ";
 		const is_budget = "האם יש תקציב?";
-		return start + name + " 🚐./n" + is_budget
+		return start + newName + " 🚐./n" + is_budget
 	},
 	answer: {
 		type: OPTIONS,
-		options: [{value: "לא", key:1}, {value: "כן", key: 2}],
+		options: [{value: "לא", key:3}, {value: "כן", key: 2}],
 		dir: "rtl",
 	},
 }
@@ -42,6 +42,7 @@ let hello_get_name = {
 		placeholder: "שם מלא |",
 		inputType: "text",
 		dir: "rtl",
+		key: 1,
 	},
 };
 
@@ -50,16 +51,87 @@ let get_budget = {
 	answer: {
 		type: RADIO_OPTIONS,
 		options: ["60k-100k", "100k-120k", "120k-150k", "150k או יותר"],
+		key: 4
 	},
 }
 
-const answerToQuestion = {
+let kindOfCar = {
+	question: "רכב משפחתי או פרטי?",
+	answer: {
+		type: OPTIONS,
+		options: [{value: "פרטי", key:5}, {value: "משפחתי", key: 6}],
+	},
+}
+
+
+let numOfPeople = {
+	question: "כמה נפשות?",
+	answer: {
+		type: RADIO_OPTIONS,
+		options: ["3-4", "5", "6", "7+"],
+		key: 7
+	},
+}
+
+let importantInCar = {
+	question: "מה הכי חשוב לך ברכב?",
+	answer: {
+		type: RADIO_OPTIONS,
+		options: ["בטיחות", "צדיקות", "נוחות", "עוצמה"],
+		key: 8
+	},
+}
+
+let firstCar = {
+	question: "האם זה הרכב הראשון שאתה קונה?",
+	answer: {
+		type: OPTIONS,
+		options: [{value: "כן", key:10}, {value: "לא", key: 9}],
+	},
+}
+
+let get_cell_num_input = {
+	question: "מה מספר הטלפון שלך?",
+	answer: {
+		type: INPUT,
+		placeholder: "הכנס מספר נייד",
+		dir: "ltr",
+		inputType: "tel",
+		key: 11,
+		inputName: PHONE,
+	}
+
+}
+
+let end = {
+	question: " עומר ייצור איתך קשר בדקות הקרובות.",
+	completed: true,
+	answer: {
+		type: COMPLETED,
+	}
+};
+
+const answerToStage = {
+	1: isBudget,
 	2: get_budget,
+	3: kindOfCar,
+	4: kindOfCar,
+	5: importantInCar,
+	6: numOfPeople,
+	7: importantInCar,
+	8: firstCar,
+	9: get_cell_num_input,
+	10: get_cell_num_input,
+	11: end,
+
 }
 
 const getNextStage = (question, answer) => {
-	return answerToQuestion[answer.key];
+	if (answer.key === 1) {
+		name = answer.value
+	}
+	return answerToStage[answer.key];
 }
 export {
-	hello_get_name, isBudget, getNextStage
+	hello_get_name, getNextStage
 }
