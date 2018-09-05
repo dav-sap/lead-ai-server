@@ -3,7 +3,8 @@ const NAME = "name";
 const PHONE = "phone";
 const OPTIONS = "options";
 const RADIO_OPTIONS = "radio_options";
-const COMPLETED = "completed"
+const COMPLETED = "completed";
+const MULTIPLE_OPTIONS = "multiple_options";
 let name = ""
 
 function getHelloString() {
@@ -35,7 +36,7 @@ let isBudget = {
 	},
 }
 let hello_get_name = {
-	question: getHelloString(),
+	question: "",
 	answer: {
 		type: INPUT,
 		inputName: NAME,
@@ -76,7 +77,7 @@ let numOfPeople = {
 let importantInCar = {
 	question: "מה הכי חשוב לך ברכב?",
 	answer: {
-		type: RADIO_OPTIONS,
+		type: MULTIPLE_OPTIONS,
 		options: ["בטיחות", "צדיקות", "נוחות", "עוצמה"],
 		key: 8
 	},
@@ -99,7 +100,8 @@ let get_cell_num_input = {
 		inputType: "tel",
 		key: 11,
 		inputName: PHONE,
-	}
+	},
+	lastQuestion: true,
 
 }
 
@@ -133,5 +135,5 @@ const getNextStage = (question, answer) => {
 	return answerToStage[answer.key];
 }
 export {
-	hello_get_name, getNextStage
+	hello_get_name, getNextStage, getHelloString
 }
