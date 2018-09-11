@@ -34,7 +34,7 @@ let isBudget = {
 	get question() {
 		let start = "נעים מאוד"
 		let newName = " " + name.split(" ")[0];
-		const is_budget = "החלטת כבר על תקציב לרכב החדש? (פחות או יותר)";
+		const is_budget = "החלטת כבר על תקציב לרכב החדש?";
 		return start + newName + ".\n" + is_budget
 	},
 	answer: {
@@ -66,7 +66,7 @@ let get_budget = {
 
 let kindOfCar = {
 	get question() {
-		return  !budget ? "אין לחץ.. נוכל לבנות את התקציב ביחד. על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?";
+		return  !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד. על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?";
 	},
 	answer: {
 		type: OPTIONS,
