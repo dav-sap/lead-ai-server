@@ -55,7 +55,7 @@ let isBudget = {
 	},
 	answer: {
 		type: OPTIONS,
-		options: [{value: "לא", key:3}, {value: "כן", key: 2}],
+		options: [{value: "עוד לא", key:3}, {value: "כן", key: 2}],
 		dir: "rtl",
 	},
 }
@@ -128,11 +128,16 @@ let perform_analysis = {
 let get_cell_num_input = {
 
 	get question() {
-		return consultant.name + " היועץ שלך רוצה ליצור איתך קשר בווטסאפ"
+		if (consultant) {
+			return consultant.name + " היועץ שלך מוכן ליצור איתך קשר בווטסאפ"
+		} else {
+			console.error("No Consultant. Should not happen");
+			return "כל היועצים שלנו תפוסים כרגע. נסה שוב מאוחר יותר"
+		}
 	},
 	answer: {
 		type: INPUT,
-		placeholder: "הכנס מספר נייד",
+		placeholder: "השאר מספר טלפון",
 		dir: "ltr",
 		inputType: "tel",
 		key: 12,
@@ -151,6 +156,7 @@ let end = {
 };
 
 const answerToStage = {
+	// 1: perform_analysis,
 	1: isBudget,
 	2: get_budget,
 	// 2: perform_analysis,
@@ -159,9 +165,7 @@ const answerToStage = {
 	5: importantInCar,
 	6: numOfPeople,
 	7: importantInCar,
-	8: firstCar,
-	9: perform_analysis,
-	10: perform_analysis,
+	8: perform_analysis,
 	11: get_cell_num_input,
 	12: end,
 
@@ -174,7 +178,7 @@ const getNextStage = (question, answer, userId) => {
 		name = answer.value
 	} else if (answer.key === 2) {
 		budget = true;
-	} else if (answer.key === 9 || answer.key === 10) {
+	} if (answer.key === 1) {
 		fetchConsultant(userId);
 	}
 	return answerToStage[answer.key];
