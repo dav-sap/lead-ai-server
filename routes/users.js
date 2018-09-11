@@ -87,7 +87,7 @@ router.post('/add_chat_answer', function (req, res, next) {
 					res.send({info: "Answer submitted", newUser: newUser, stage: getNextStage(reqBody.question, reqBody.answer)})
 				})
 			} else {
-				res.send({info: "Answer submitted", user: user, stage: getNextStage(reqBody.question, reqBody.answer)})
+				res.send({info: "Answer submitted", user: user, stage: getNextStage(reqBody.question, reqBody.answer, reqBody._id )})
 			}
         }).catch(err => {
         	console.error(err.toString());

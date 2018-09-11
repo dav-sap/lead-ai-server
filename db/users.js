@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var validators = require('mongoose-validators');
 var schemaConsts = require('./consts');
+var consultantsSchema = require('./consultants');
 
 var usersSchema = new Schema({
     name:  {type: String, required: true},
@@ -17,6 +18,7 @@ var usersSchema = new Schema({
         }
     },
     chat: {data: [{question: String, answer: String}], date: Date},
+	referenced: {type: mongoose.Schema.Types.ObjectId, ref:consultantsSchema.modelName}
     // references: [{photographer: {type: mongoose.Schema.Types.ObjectId, ref:photographersSchema.modelName}, consultant: {type: mongoose.Schema.Types.ObjectId, ref:consultantsSchema.modelName}, date: Date}],
 });
 
