@@ -13,28 +13,12 @@ let name = "";
 let budget = false;
 let consultant = null;
 
-function getHelloString() {
-	// let today = new Date().getHours();
-	// let start = "";
-	// if (today >= 5 && today < 12) {
-	// 	start = "בוקר טוב!"
-	// } else if (today >= 12 && today < 18) {
-	// 	start = "צהריים טובים!"
-	// } else if (today >= 18 && today < 22) {
-	// 	start = "ערב טוב!"
-	// } else if (today >= 22 || today < 5) {
-	// 	start = "לילה טוב!"
-	// }
-	// let end = " איך קוראים לך?";
-	// return start + end;
-	return "יאללה התחלנו 💪";
-}
 function fetchConsultant(userId) {
 	consultants.find({}, (err, consultants) => {
 		return consultants
 	}).then(consultants => {
 		let chosenConsultant = consultants[Math.floor(Math.random() * consultants.length)];
-		setConsultant(chosenConsultant);
+		consultant = chosenConsultant;
 		return users.findOneAndUpdate({_id: userId}, {$set: {'referenced': chosenConsultant}}, {new: true});
 	}).then(user => {
 		if (!user) {
@@ -74,8 +58,8 @@ let hello_get_name = {
 let get_budget = {
 	question: "קול. כמה מתכננים להשקיע?",
 	answer: {
-		type: RADIO_OPTIONS,
-		options: ["60-100 אלף", "100-120 אלף", "120-150 אלף", "150 אלף או יותר"],
+		type: MULTIPLE_OPTIONS,
+		options: ["100-120 אלף", "60-100 אלף", "150 אלף או יותר",  "120-150 אלף"],
 		key: 4
 	},
 }
@@ -94,8 +78,8 @@ let kindOfCar = {
 let numOfPeople = {
 	question: "כמה נפשות אתם?",
 	answer: {
-		type: RADIO_OPTIONS,
-		options: ["3-4", "5", "6", "7+"],
+		type: MULTIPLE_OPTIONS,
+		options: ["5", "3-4", "7 או יותר", "6"],
 		key: 7
 	},
 }
@@ -104,7 +88,7 @@ let importantInCar = {
 	question: "מה הכי חשוב לך ברכב? (אפשר לסמן יותר מתשובה אחת)",
 	answer: {
 		type: MULTIPLE_OPTIONS,
-		options: ["בטיחות", "צדיקות", "נוחות", "עוצמה"],
+		options: ["בטיחות", "אמינות", "מחיר", "ביצועים"],
 		key: 8
 	},
 }
@@ -118,7 +102,7 @@ let firstCar = {
 }
 
 let perform_analysis = {
-	question: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ רכב פנוי..', '🍓🍓🍓\n בינגו!'],
+	question: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ רכב פנוי..', '🍓🍓🍓 בינגו!'],
 	answer: {
 		type: NEXT_QUESTION,
 		key: 11,
@@ -132,9 +116,10 @@ let get_cell_num_input = {
 			return consultant.name + " היועץ שלך מוכן ליצור איתך קשר בווטסאפ"
 		} else {
 			console.error("No Consultant. Should not happen");
-			return "כל היועצים שלנו תפוסים כרגע. נסה שוב מאוחר יותר"
+			return "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה "
 		}
 	},
+	get consultantImg() {return consultant.imgPath},
 	answer: {
 		type: INPUT,
 		placeholder: "השאר מספר טלפון",
@@ -168,21 +153,25 @@ const answerToStage = {
 	8: perform_analysis,
 	11: get_cell_num_input,
 	12: end,
-
 }
+
 const setConsultant = (consultantGiven) => {
 	consultant = consultantGiven;
 }
 const getNextStage = (question, answer, userId) => {
+
 	if (answer.key === 1) {
 		name = answer.value
 	} else if (answer.key === 2) {
 		budget = true;
-	} if (answer.key === 1) {
+	} else if (answer.key === 3) {
+		budget = false;
+	}else if (answer.key === 8) {
 		fetchConsultant(userId);
 	}
+
 	return answerToStage[answer.key];
 }
 export {
-	hello_get_name, getNextStage, getHelloString, setConsultant
+	hello_get_name, getNextStage, setConsultant
 }
