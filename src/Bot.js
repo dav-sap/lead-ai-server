@@ -58,7 +58,7 @@ let hello_get_name = {
 let get_budget = {
 	question: "קול. כמה מתכננים להשקיע?",
 	answer: {
-		type: MULTIPLE_OPTIONS,
+		type: RADIO_OPTIONS,
 		options: ["100-120 אלף", "60-100 אלף", "150 אלף או יותר",  "120-150 אלף"],
 		key: 4
 	},
@@ -66,7 +66,7 @@ let get_budget = {
 
 let kindOfCar = {
 	get question() {
-		return  !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד. על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?";
+		return  !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד.\n על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?";
 	},
 	answer: {
 		type: OPTIONS,
@@ -78,7 +78,7 @@ let kindOfCar = {
 let numOfPeople = {
 	question: "כמה נפשות אתם?",
 	answer: {
-		type: MULTIPLE_OPTIONS,
+		type: RADIO_OPTIONS,
 		options: ["5", "3-4", "7 או יותר", "6"],
 		key: 7
 	},
