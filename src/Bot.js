@@ -70,7 +70,7 @@ let kindOfCar = {
 	},
 	answer: {
 		type: OPTIONS,
-		options: [{value: "פרטי", key:5}, {value: "משפחתי", key: 6}],
+		options: [{value: "פרטי", key:5}, {value: "מסחרי", key: 6}],
 	},
 }
 
