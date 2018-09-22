@@ -83,7 +83,8 @@ router.post('/add_chat_answer', function (req, res, next) {
         .then(user => {
 			if (!user) {
 				let startDate = new Date();
-				users.create({name: reqBody.answer.value, chat: {data: [], date: startDate}}).then(newUser => {
+				users.create({name: reqBody.answer.value, chat: {data: [], date: startDate}})
+                .then(newUser => {
 					res.send({info: "Answer submitted", newUser: newUser, stage: getNextStage(reqBody.question, reqBody.answer)})
 				})
 			} else {
