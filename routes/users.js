@@ -79,16 +79,22 @@ router.post('/add_user', function (req, res, next) {
 
 router.post('/add_chat_answer', function (req, res, next) {
     let reqBody = req.body;
+    if (!reqBody._id) {
+		let startDate = new Date();
+		users.create({name: reqBody.answer.value, chat: {data: [], date: startDate}})
+			.then(newUser => {
+				res.send({info: "Answer submitted", newUser: newUser, stage: getNextStage(reqBody.question, reqBody.answer)})
+			}).catch(err => {
+				console.error(err.toString());
+				res.status(500).send({error: "Failed to create user", info: err.toString()})
+			})
+	}
     users.findOneAndUpdate({_id: reqBody._id}, {$push: {'chat.data': {question: reqBody.question, answer: reqBody.answer.value}}})
         .then(user => {
-			if (!user) {
-				let startDate = new Date();
-				users.create({name: reqBody.answer.value, chat: {data: [], date: startDate}})
-                .then(newUser => {
-					res.send({info: "Answer submitted", newUser: newUser, stage: getNextStage(reqBody.question, reqBody.answer)})
-				})
-			} else {
+			if (user) {
 				return consultants.findOne({_id: user.referenced})
+			} else {
+				res.status(400).send({error: "User not found " + reqBody._id})
 			}
         }).then(consultant => {
 			res.send({info: "Answer submitted", stage: getNextStage(reqBody.question, reqBody.answer, reqBody._id, consultant )})
