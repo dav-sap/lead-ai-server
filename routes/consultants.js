@@ -1,5 +1,3 @@
-import {setConsultant} from "../src/Bot";
-
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
@@ -47,25 +45,7 @@ router.post('/add_pic', (req, res, next) =>{
         res.status(400).send({error: "JSON ERROR", info: `phone number: ${consultantJson.phoneNumber}, email: ${consultantJson.email}, or imgPath: ${consultantJson.imgPath}. Not Correct`})
     }
 });
-router.get('/get_consultant', (req, res, next) => {
-    consultants.find({}, (err, consultants) => {
-		return consultants
-	}).then(consultants => {
-		let chosenConsultant = consultants[Math.floor(Math.random() * consultants.length)];
-		setConsultant(chosenConsultant);
-		return users.findOneAndUpdate({_id: req.query.user}, {$set: {'referenced': chosenConsultant}}, {new: true});
-	}).then(user => {
-		if (!user) {
-			console.error("No user found for ", req.query.user);
-			res.status(400).send({error: "Consultant not fetched. No user found"})
-		} else {
-			res.send({info: "Added consultant to user", user: user})
-		}
-	}).catch(err => {
-		console.error(err.toString());
-		res.status(500).send({error: "Error adding consultant to user"})
-	})
-});
+
 router.post('/get_consultant_picture', (req, res, next) =>{
     let consultantJson = req.body;
     if (consultantJson.phoneNumber && consultantJson.email) {

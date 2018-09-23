@@ -23,8 +23,10 @@ function fetchConsultant(userId) {
 	}).then(user => {
 		if (!user) {
 			console.error("No user found for ", userId);
+			return null;
 		} else {
 			console.log("Added consultant to user");
+			return user;
 		}
 	}).catch(err => {
 		console.error(err.toString());
@@ -79,7 +81,7 @@ let numOfPeople = {
 	question: "כמה נפשות אתם?",
 	answer: {
 		type: RADIO_OPTIONS,
-		options: ["5", "3-4", "7 או יותר", "6"],
+		options: ["3-4", "1-2", "6 או יותר", "5"],
 		key: 7
 	},
 }
@@ -102,7 +104,7 @@ let firstCar = {
 }
 
 let perform_analysis = {
-	question: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ רכב פנוי..', '🍓🍓🍓 בינגו!'],
+	question: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ זמין..', '🍓🍓🍓'],
 	answer: {
 		type: NEXT_QUESTION,
 		key: 11,
@@ -113,13 +115,15 @@ let get_cell_num_input = {
 
 	get question() {
 		if (consultant) {
-			return consultant.name + " היועץ שלך מוכן ליצור איתך קשר בווטסאפ"
+			return "מצאתי לך יועץ!\n" + consultant.name + " מוכן ליצור איתך קשר בווטסאפ"
 		} else {
 			console.error("No Consultant. Should not happen");
 			return "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה "
 		}
 	},
-	get consultantImg() {return consultant.imgPath},
+	get consultantImg() {
+		return consultant.imgPath
+	},
 	answer: {
 		type: INPUT,
 		placeholder: "השאר מספר טלפון",
@@ -132,7 +136,7 @@ let get_cell_num_input = {
 
 let end = {
 	get question() {
-		return consultant.name + " ייצור איתך קשר בדקות הקרובות.";
+		return "רשמתי ועדכנתי את " + consultant.name + " בפרטים שלך. נדבר בקרוב"
 	},
 	completed: true,
 	answer: {
@@ -155,23 +159,19 @@ const answerToStage = {
 	12: end,
 }
 
-const setConsultant = (consultantGiven) => {
-	consultant = consultantGiven;
-}
-const getNextStage = (question, answer, userId) => {
-
+const getNextStage = (question, answer, userId, consultantRef) => {
+	consultant = consultantRef;
 	if (answer.key === 1) {
 		name = answer.value
 	} else if (answer.key === 2) {
 		budget = true;
 	} else if (answer.key === 3) {
 		budget = false;
-	}else if (answer.key === 8) {
-		fetchConsultant(userId);
 	}
 
 	return answerToStage[answer.key];
+
 }
 export {
-	hello_get_name, getNextStage, setConsultant
+	hello_get_name, getNextStage
 }

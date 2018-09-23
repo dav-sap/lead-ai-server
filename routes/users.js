@@ -88,9 +88,11 @@ router.post('/add_chat_answer', function (req, res, next) {
 					res.send({info: "Answer submitted", newUser: newUser, stage: getNextStage(reqBody.question, reqBody.answer)})
 				})
 			} else {
-				res.send({info: "Answer submitted", user: user, stage: getNextStage(reqBody.question, reqBody.answer, reqBody._id )})
+				return consultants.findOne({_id: user.referenced})
 			}
-        }).catch(err => {
+        }).then(consultant => {
+			res.send({info: "Answer submitted", stage: getNextStage(reqBody.question, reqBody.answer, reqBody._id, consultant )})
+		}).catch(err => {
         	console.error(err.toString());
             res.status(500).send({error: "Chat Answer not added", info: err.toString()})
         })
