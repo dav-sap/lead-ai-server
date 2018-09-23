@@ -13,31 +13,31 @@ let name = "";
 let budget = false;
 let consultant = null;
 
-function fetchConsultant(userId) {
-	consultants.find({}, (err, consultants) => {
-		return consultants
-	}).then(consultants => {
-		let chosenConsultant = consultants[Math.floor(Math.random() * consultants.length)];
-		consultant = chosenConsultant;
-		return users.findOneAndUpdate({_id: userId}, {$set: {'referenced': chosenConsultant}}, {new: true});
-	}).then(user => {
-		if (!user) {
-			console.error("No user found for ", userId);
-			return null;
-		} else {
-			console.log("Added consultant to user");
-			return user;
-		}
-	}).catch(err => {
-		console.error(err.toString());
-	})
-}
+// function fetchConsultant(userId) {
+// 	consultants.find({}, (err, consultants) => {
+// 		return consultants
+// 	}).then(consultants => {
+// 		let chosenConsultant = consultants[Math.floor(Math.random() * consultants.length)];
+// 		consultant = chosenConsultant;
+// 		return users.findOneAndUpdate({_id: userId}, {$set: {'referenced': chosenConsultant}}, {new: true});
+// 	}).then(user => {
+// 		if (!user) {
+// 			console.error("No user found for ", userId);
+// 			return null;
+// 		} else {
+// 			console.log("Added consultant to user");
+// 			return user;
+// 		}
+// 	}).catch(err => {
+// 		console.error(err.toString());
+// 	})
+// }
 let isBudget = {
 	get question() {
 		let start = "נעים מאוד"
 		let newName = " " + name.split(" ")[0];
 		const is_budget = "החלטת כבר על תקציב לרכב החדש?";
-		return start + newName + ".\n" + is_budget
+		return {text: start + newName + ".\n" + is_budget, key: 1}
 	},
 	answer: {
 		type: OPTIONS,
@@ -46,7 +46,7 @@ let isBudget = {
 	},
 }
 let hello_get_name = {
-	question: "יאללה התחלנו 💪",
+	question: {text: "יאללה התחלנו 💪", key: 0},
 	answer: {
 		type: INPUT,
 		inputName: NAME,
@@ -58,7 +58,7 @@ let hello_get_name = {
 };
 
 let get_budget = {
-	question: "קול. כמה מתכננים להשקיע?",
+	question: {text: "קול. כמה מתכננים להשקיע?", key: 2},
 	answer: {
 		type: RADIO_OPTIONS,
 		options: ["100-120 אלף", "60-100 אלף", "150 אלף או יותר",  "120-150 אלף"],
@@ -68,7 +68,7 @@ let get_budget = {
 
 let kindOfCar = {
 	get question() {
-		return  !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד.\n על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?";
+		return  {text: !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד.\n על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?", key: 3}
 	},
 	answer: {
 		type: OPTIONS,
@@ -78,7 +78,7 @@ let kindOfCar = {
 
 
 let numOfPeople = {
-	question: "כמה נפשות אתם?",
+	question: {text: "כמה נפשות אתם?", key: 4},
 	answer: {
 		type: RADIO_OPTIONS,
 		options: ["3-4", "1-2", "6 או יותר", "5"],
@@ -87,7 +87,7 @@ let numOfPeople = {
 }
 
 let importantInCar = {
-	question: "מה הכי חשוב לך ברכב? (אפשר לסמן יותר מתשובה אחת)",
+	question: {text: "מה הכי חשוב לך ברכב? (אפשר לסמן יותר מתשובה אחת)", key: 5},
 	answer: {
 		type: MULTIPLE_OPTIONS,
 		options: ["בטיחות", "אמינות", "מחיר", "ביצועים"],
@@ -104,7 +104,7 @@ let firstCar = {
 }
 
 let perform_analysis = {
-	question: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ זמין..', '🍓🍓🍓'],
+	question: { text: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ זמין..', '🍓🍓🍓'], key: 6},
 	answer: {
 		type: NEXT_QUESTION,
 		key: 11,
@@ -115,14 +115,14 @@ let get_cell_num_input = {
 
 	get question() {
 		if (consultant) {
-			return "מצאתי לך יועץ!\n" + consultant.name + " מוכן ליצור איתך קשר בווטסאפ"
+			return {text: "מצאתי לך יועץ!\n" + consultant.name + " מוכן ליצור איתך קשר בווטסאפ", key: 7}
 		} else {
 			console.error("No Consultant. Should not happen");
-			return "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה "
+			return {text: "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה ", key:7 }
 		}
 	},
 	get consultantImg() {
-		return consultant.imgPath
+		return consultant.imgPath ? consultant.imgPath : "";
 	},
 	answer: {
 		type: INPUT,
@@ -136,7 +136,7 @@ let get_cell_num_input = {
 
 let end = {
 	get question() {
-		return "רשמתי ועדכנתי את " + consultant.name + " בפרטים שלך. נדבר בקרוב"
+		return {text: "רשמתי ועדכנתי את " + consultant.name + " בפרטים שלך. נדבר בקרוב", key: 8}
 	},
 	completed: true,
 	answer: {
@@ -160,7 +160,9 @@ const answerToStage = {
 }
 
 const getNextStage = (question, answer, userId, consultantRef) => {
-	consultant = consultantRef;
+	if (consultantRef) {
+		consultant = consultantRef;
+	}
 	if (answer.key === 1) {
 		name = answer.value
 	} else if (answer.key === 2) {

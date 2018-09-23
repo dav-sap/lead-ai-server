@@ -89,8 +89,21 @@ router.post('/add_chat_answer', function (req, res, next) {
 				res.status(500).send({error: "Failed to create user", info: err.toString()})
 			})
 	} else {
-    	users.findOneAndUpdate({_id: reqBody._id}, {$push: {'chat.data': {question: reqBody.question, answer: reqBody.answer.value}}})
+		users.findOne({_id: reqBody._id})
 			.then(user => {
+				if (user) {
+					const insertedDataIndex = user.chat.data.findIndex(insertedData => insertedData.question.key === reqBody.question.key);
+					let dataCopy = JSON.parse(JSON.stringify(user.chat.data))
+					if (insertedDataIndex !== -1) {
+						dataCopy[insertedDataIndex].answer = reqBody.answer.value;
+					} else {
+						dataCopy.push({question: reqBody.question, answer: reqBody.answer.value})
+					}
+					return users.findOneAndUpdate({_id: reqBody._id}, {$set: {'chat.data': dataCopy}})
+				} else {
+					res.status(400).send({error: "User not found " + reqBody._id})
+				}
+			}).then(user => {
 				if (user) {
 					if (user.referenced) {
 						return consultants.findOne({_id: user.referenced})
@@ -100,7 +113,7 @@ router.post('/add_chat_answer', function (req, res, next) {
 					res.status(400).send({error: "User not found " + reqBody._id})
 				}
 			}).then(consultant => {
-				res.send({info: "Answer submitted", stage: getNextStage(reqBody.question, reqBody.answer, reqBody._id, consultant )})
+					res.send({info: "Answer submitted", stage: getNextStage(reqBody.question, reqBody.answer, reqBody._id, consultant )})
 			}).catch(err => {
 				console.error(err.toString());
 				res.status(500).send({error: "Chat Answer not added", info: err.toString()})
