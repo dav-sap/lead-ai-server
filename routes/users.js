@@ -92,7 +92,10 @@ router.post('/add_chat_answer', function (req, res, next) {
     	users.findOneAndUpdate({_id: reqBody._id}, {$push: {'chat.data': {question: reqBody.question, answer: reqBody.answer.value}}})
 			.then(user => {
 				if (user) {
-					return consultants.findOne({_id: user.referenced})
+					if (user.referenced) {
+						return consultants.findOne({_id: user.referenced})
+					}
+					return null;
 				} else {
 					res.status(400).send({error: "User not found " + reqBody._id})
 				}
