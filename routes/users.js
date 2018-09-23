@@ -88,20 +88,21 @@ router.post('/add_chat_answer', function (req, res, next) {
 				console.error(err.toString());
 				res.status(500).send({error: "Failed to create user", info: err.toString()})
 			})
+	} else {
+    	users.findOneAndUpdate({_id: reqBody._id}, {$push: {'chat.data': {question: reqBody.question, answer: reqBody.answer.value}}})
+			.then(user => {
+				if (user) {
+					return consultants.findOne({_id: user.referenced})
+				} else {
+					res.status(400).send({error: "User not found " + reqBody._id})
+				}
+			}).then(consultant => {
+				res.send({info: "Answer submitted", stage: getNextStage(reqBody.question, reqBody.answer, reqBody._id, consultant )})
+			}).catch(err => {
+				console.error(err.toString());
+				res.status(500).send({error: "Chat Answer not added", info: err.toString()})
+			})
 	}
-    users.findOneAndUpdate({_id: reqBody._id}, {$push: {'chat.data': {question: reqBody.question, answer: reqBody.answer.value}}})
-        .then(user => {
-			if (user) {
-				return consultants.findOne({_id: user.referenced})
-			} else {
-				res.status(400).send({error: "User not found " + reqBody._id})
-			}
-        }).then(consultant => {
-			res.send({info: "Answer submitted", stage: getNextStage(reqBody.question, reqBody.answer, reqBody._id, consultant )})
-		}).catch(err => {
-        	console.error(err.toString());
-            res.status(500).send({error: "Chat Answer not added", info: err.toString()})
-        })
 });
 
 module.exports = router;
