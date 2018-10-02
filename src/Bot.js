@@ -3,6 +3,7 @@ const users = require('./../db/users.js');
 
 const INPUT = "input";
 const NAME = "name";
+const AGE = "age";
 const PHONE = "phone";
 const OPTIONS = "options";
 const RADIO_OPTIONS = "radio_options";
@@ -55,13 +56,21 @@ let hello_get_name = {
 		dir: "rtl",
 		key: 1,
 	},
+		// {
+		// 	type: INPUT,
+		// 	inputName: AGE,
+		// 	placeholder: "גיל |",
+		// 	inputType: "text",
+		// 	dir: "ltr",
+		// 	key: 2,
+		// }
 };
 
 let get_budget = {
 	question: {text: "קול. כמה מתכננים להשקיע?", key: 2},
 	answer: {
 		type: RADIO_OPTIONS,
-		options: ["100-120 אלף", "60-100 אלף", "150 אלף או יותר",  "120-150 אלף"],
+		options: ["60-80 אלף", "80-100 אלף", "100-150 אלף", "150 אלף או יותר"],
 		key: 4
 	},
 }
@@ -71,8 +80,9 @@ let kindOfCar = {
 		return  {text: !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד.\n על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?", key: 3}
 	},
 	answer: {
-		type: OPTIONS,
-		options: [{value: "פרטי", key:5}, {value: "מסחרי", key: 6}],
+		type: RADIO_OPTIONS,
+		options: ["קטן", "משפחתי", "פנאי", "מסחרי"],
+		key: 6
 	},
 }
 
@@ -90,7 +100,7 @@ let importantInCar = {
 	question: {text: "מה הכי חשוב לך ברכב? (אפשר לסמן יותר מתשובה אחת)", key: 5},
 	answer: {
 		type: MULTIPLE_OPTIONS,
-		options: ["בטיחות", "אמינות", "מחיר", "ביצועים"],
+		options: ["בטיחות", "אמינות", "אבזור", "ביצועים"],
 		key: 8
 	},
 }
@@ -104,7 +114,7 @@ let firstCar = {
 }
 
 let perform_analysis = {
-	question: { text: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ זמין..', '🍓🍓🍓'], key: 6},
+	question: { text: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ זמין..', 'מצאתי לך יועץ!'], key: 6},
 	answer: {
 		type: NEXT_QUESTION,
 		key: 11,
@@ -115,7 +125,7 @@ let get_cell_num_input = {
 
 	get question() {
 		if (consultant) {
-			return {text: "מצאתי לך יועץ!\n" + consultant.name + " מוכן ליצור איתך קשר בווטסאפ", key: 7}
+			return {text: consultant.name + " מוכן ליצור איתך קשר בווטסאפ", key: 7}
 		} else {
 			console.error("No Consultant. Should not happen");
 			return {text: "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה ", key:7 }
@@ -136,7 +146,20 @@ let get_cell_num_input = {
 
 let end = {
 	get question() {
-		return {text: "רשמתי ועדכנתי את " + consultant.name + " בפרטים שלך. נדבר בקרוב", key: 8}
+		const today = new Date();
+		const hour = today.getHours();
+		let text = "רשמתי ועדכנתי את " + consultant.name + " בפרטים שלך.";
+		text += "\n";
+		if (hour >= 21 || hour < 5) {
+			text += "הוא בטח חולם כרגע על רכבים, אז נדבר מחר בבוקר 😀"
+		} else if (hour >= 5 && hour < 8) {
+			text += "סחטיין על השעה המוקדמת בבוקר 😀 נדבר בקרוב!"
+		} else if (hour >= 8 && hour < 18) {
+			text += "נהיה בקשר בקרוב!"
+		} else if (hour >= 18 && hour < 22) {
+			text += "ניצור קשר בקרוב, ערב טוב!"
+		}
+		return {text: text, key: 8}
 	},
 	completed: true,
 	answer: {
@@ -151,9 +174,9 @@ const answerToStage = {
 	// 2: perform_analysis,
 	3: kindOfCar,
 	4: kindOfCar,
-	5: numOfPeople,
+	// 5: numOfPeople,
 	6: importantInCar,
-	7: importantInCar,
+	// 7: importantInCar,
 	8: perform_analysis,
 	11: get_cell_num_input,
 	12: end,
