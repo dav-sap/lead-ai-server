@@ -14,31 +14,12 @@ let name = "";
 let budget = false;
 let consultant = null;
 
-// function fetchConsultant(userId) {
-// 	consultants.find({}, (err, consultants) => {
-// 		return consultants
-// 	}).then(consultants => {
-// 		let chosenConsultant = consultants[Math.floor(Math.random() * consultants.length)];
-// 		consultant = chosenConsultant;
-// 		return users.findOneAndUpdate({_id: userId}, {$set: {'referenced': chosenConsultant}}, {new: true});
-// 	}).then(user => {
-// 		if (!user) {
-// 			console.error("No user found for ", userId);
-// 			return null;
-// 		} else {
-// 			console.log("Added consultant to user");
-// 			return user;
-// 		}
-// 	}).catch(err => {
-// 		console.error(err.toString());
-// 	})
-// }
 let isBudget = {
 	get question() {
 		let start = "נעים מאוד"
 		let newName = " " + name.split(" ")[0];
 		const is_budget = "החלטת כבר על תקציב לרכב החדש?";
-		return {text: start + newName + ".\n" + is_budget, key: 1}
+		return {text: start + newName + ".\n" + is_budget, key: 1, event: "is_budget"}
 	},
 	answer: {
 		type: OPTIONS,
@@ -47,7 +28,7 @@ let isBudget = {
 	},
 }
 let hello_get_name = {
-	question: {text: "יאללה התחלנו 💪", key: 0},
+	question: {text: "יאללה התחלנו 💪", key: 0, event: "full_name"},
 	answer: {
 		type: INPUT,
 		inputName: NAME,
@@ -67,7 +48,7 @@ let hello_get_name = {
 };
 
 let get_budget = {
-	question: {text: "קול. כמה מתכננים להשקיע?", key: 2},
+	question: {text: "קול. כמה מתכננים להשקיע?", key: 2, event: "whats_your_budget"},
 	answer: {
 		type: RADIO_OPTIONS,
 		options: ["60-80 אלף", "80-100 אלף", "100-150 אלף", "150 אלף או יותר"],
@@ -77,7 +58,7 @@ let get_budget = {
 
 let kindOfCar = {
 	get question() {
-		return  {text: !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד.\n על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?", key: 3}
+		return  {text: !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד.\n על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?", key: 3, event: "Kind of Car"}
 	},
 	answer: {
 		type: RADIO_OPTIONS,
@@ -97,7 +78,7 @@ let numOfPeople = {
 }
 
 let importantInCar = {
-	question: {text: "מה הכי חשוב לך ברכב? (אפשר לסמן יותר מתשובה אחת)", key: 5},
+	question: {text: "מה הכי חשוב לך ברכב? (אפשר לסמן יותר מתשובה אחת)", key: 5, event: "important_in_car"},
 	answer: {
 		type: MULTIPLE_OPTIONS,
 		options: ["בטיחות", "אמינות", "אבזור", "ביצועים"],
@@ -114,7 +95,7 @@ let firstCar = {
 }
 
 let perform_analysis = {
-	question: { text: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ זמין..', 'מצאתי לך יועץ!'], key: 6},
+	question: { text: ['שומר נתונים...', 'סורק מאגר רכבים..', 'מחפש יועץ זמין..', 'מצאתי לך יועץ!'], key: 6, event: "performing_analysis"},
 	answer: {
 		type: NEXT_QUESTION,
 		key: 11,
@@ -125,10 +106,10 @@ let get_cell_num_input = {
 
 	get question() {
 		if (consultant) {
-			return {text: consultant.name + " מוכן ליצור איתך קשר בווטסאפ", key: 7}
+			return {text: consultant.name + " מוכן ליצור איתך קשר בווטסאפ", key: 7, event: "cell_number"}
 		} else {
 			console.error("No Consultant. Should not happen");
-			return {text: "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה ", key:7 }
+			return {text: "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה ", key:7, event: "cell_number"}
 		}
 	},
 	get consultantImg() {
@@ -159,7 +140,7 @@ let end = {
 		} else if (hour >= 18 && hour < 22) {
 			text += "ניצור קשר בקרוב, ערב טוב!"
 		}
-		return {text: text, key: 8}
+		return {text: text, key: 8, event: "completed_flow"}
 	},
 	completed: true,
 	answer: {
