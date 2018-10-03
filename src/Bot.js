@@ -19,7 +19,7 @@ let isBudget = {
 		let start = "נעים מאוד"
 		let newName = " " + name.split(" ")[0];
 		const is_budget = "החלטת כבר על תקציב לרכב החדש?";
-		return {text: start + newName + ".\n" + is_budget, key: 1, event: "is_budget"}
+		return {text: start + newName + ".\n" + is_budget, key: 1, event: "has_budget"}
 	},
 	answer: {
 		type: OPTIONS,
@@ -58,7 +58,7 @@ let get_budget = {
 
 let kindOfCar = {
 	get question() {
-		return  {text: !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד.\n על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?", key: 3, event: "Kind of Car"}
+		return  {text: !budget ? "אין לחץ.. נוכל לתכנן את התקציב ביחד.\n על איזה סוג רכב חשבת?" :  "אחלה. איזה סוג רכב חשבת לקנות?", key: 3, event: "car_kind"}
 	},
 	answer: {
 		type: RADIO_OPTIONS,
@@ -78,7 +78,7 @@ let numOfPeople = {
 }
 
 let importantInCar = {
-	question: {text: "מה הכי חשוב לך ברכב? (אפשר לסמן יותר מתשובה אחת)", key: 5, event: "important_in_car"},
+	question: {text: "מה הכי חשוב לך ברכב? (אפשר לסמן יותר מתשובה אחת)", key: 5, event: "car_preferences"},
 	answer: {
 		type: MULTIPLE_OPTIONS,
 		options: ["בטיחות", "אמינות", "אבזור", "ביצועים"],
@@ -106,10 +106,10 @@ let get_cell_num_input = {
 
 	get question() {
 		if (consultant) {
-			return {text: consultant.name + " מוכן ליצור איתך קשר בווטסאפ", key: 7, event: "cell_number"}
+			return {text: consultant.name + " מוכן ליצור איתך קשר בווטסאפ", key: 7, event: "phone_number"}
 		} else {
 			console.error("No Consultant. Should not happen");
-			return {text: "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה ", key:7, event: "cell_number"}
+			return {text: "כל היועצים שלנו תפוסים כרגע. נציג ייצור איתך קשר ברגע שיתפנה ", key:7, event: "phone_number"}
 		}
 	},
 	get consultantImg() {
