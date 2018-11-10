@@ -1,6 +1,7 @@
 const consultants = require('./../db/consultants.js');
 const users = require('./../db/users.js');
-
+const rp = require('request-promise');
+const config = require('./../config/development.json')
 const INPUT = "input";
 const NAME = "name";
 const AGE = "age";
@@ -13,6 +14,41 @@ const NEXT_QUESTION = "next_question";
 let name = "";
 let budget = false;
 let consultant = null;
+
+const sendToTwilio = (msg, to) => {
+	rp.post(`https://api.twilio.com/2010-04-01/Accounts/${config.TWILIO.account_auth_token}/Messages.json`, {
+		auth: {
+			'user': config.TWILIO.account_auth_token,
+			'pass': config.TWILIO.auth_token
+		},
+		form: {
+			To: to,
+			From: config.TWILIO.phone_num_from,
+			Body: msg
+		}
+	}).then(response => {
+		console.log("success sending sms " + to)
+	}).catch(err => {
+		console.error(err);
+	})
+}
+const sendCompletedFlowSMS = (userId) => {
+	users.findOne({_id: userId})
+		.then(user => {
+			let msg = "\n" + "שם: " + user.name + "\n"
+			user.chat.data.forEach(chat => {
+				msg += "שאלה: "
+				msg += chat.question + "\n"
+				msg += "תשובה: "
+				msg += chat.answer + "\n"
+			})
+			sendToTwilio(msg, config.TWILIO.phone_num_to_chanan)
+			sendToTwilio(msg, config.TWILIO.phone_num_to_david)
+		})
+
+
+}
+
 
 let isBudget = {
 	get question() {
@@ -173,11 +209,14 @@ const getNextStage = (question, answer, userId, consultantRef) => {
 		budget = true;
 	} else if (answer.key === 3) {
 		budget = false;
+	} else if (answer.key === 12) {
+		sendCompletedFlowSMS(userId)
 	}
+
 
 	return answerToStage[answer.key];
 
 }
 export {
-	hello_get_name, getNextStage
+	hello_get_name, getNextStage, sendCompletedFlowSMS
 }
