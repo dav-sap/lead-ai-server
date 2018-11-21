@@ -46,7 +46,7 @@ const sendCompletedFlowSMS = (userId) => {
 					return;
 				}
 				msg += "שאלה: "
-				msg += chat.question + "\n"
+				msg += chat.question.text + "\n"
 				msg += "תשובה: "
 				msg += chat.answer + "\n"
 			})

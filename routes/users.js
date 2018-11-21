@@ -97,7 +97,7 @@ router.post('/add_chat_answer', function (req, res, next) {
 					if (insertedDataIndex !== -1) {
 						dataCopy[insertedDataIndex].answer = reqBody.answer.value;
 					} else {
-						dataCopy.push({question: {text: reqBody.question.text, key:reqBody.question.key}, answer: reqBody.answer.value})
+						dataCopy.push({question: reqBody.question, answer: reqBody.answer.value})
 					}
 					return users.findOneAndUpdate({_id: reqBody._id}, {$set: {'chat.data': dataCopy}})
 				} else {
