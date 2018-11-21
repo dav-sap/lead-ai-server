@@ -42,6 +42,9 @@ const sendCompletedFlowSMS = (userId) => {
 		.then(user => {
 			let msg = "\n" + "שם: " + user.name + "\n"
 			user.chat.data.forEach(chat => {
+				if (chat.question.key === 6) {
+					return;
+				}
 				msg += "שאלה: "
 				msg += chat.question + "\n"
 				msg += "תשובה: "
