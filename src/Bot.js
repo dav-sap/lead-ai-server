@@ -1,7 +1,12 @@
 const consultants = require('./../db/consultants.js');
 const users = require('./../db/users.js');
 const rp = require('request-promise');
-const config = require('./../config/development.json')
+let config;
+if (process.env.NODE_ENV === "development") {
+	config = require('./config/development.json')
+} else {
+	config = require('./config/production.json')
+}
 const INPUT = "input";
 const NAME = "name";
 const AGE = "age";
