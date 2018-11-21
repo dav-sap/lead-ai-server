@@ -17,7 +17,7 @@ var usersSchema = new Schema({
             partialFilterExpression: {email: {$type: 'string'}}
         }
     },
-    chat: {data: [{question: String, answer: String}], date: Date},
+    chat: {data: [{question: {key: Number, text: String}, answer: String}], date: Date},
 	referenced: {type: mongoose.Schema.Types.ObjectId, ref:consultantsSchema.modelName}
 });
 
