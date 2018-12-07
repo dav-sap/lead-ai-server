@@ -175,13 +175,13 @@ let end = {
 		const hour = today.getHours();
 		let text = "רשמתי ועדכנתי את " + consultant.name + " בפרטים שלך.";
 		text += "\n";
-		if (hour >= 22 || hour < 5) {
+		if (hour >= 20 || hour < 3) {
 			text += "הוא בטח חולם כרגע על רכבים, אז נדבר מחר בבוקר 😀"
-		} else if (hour >= 5 && hour < 8) {
+		} else if (hour >= 3 && hour < 6) {
 			text += "סחטיין על השעה המוקדמת בבוקר 😀 נדבר בקרוב!"
-		} else if (hour >= 8 && hour < 18) {
+		} else if (hour >= 6 && hour < 16) {
 			text += "נהיה בקשר בקרוב!"
-		} else if (hour >= 18 && hour < 22) {
+		} else if (hour >= 16 && hour < 20) {
 			text += "ניצור קשר בקרוב, ערב טוב!"
 		}
 		return {text: text, key: 8, event: "completed_flow"}
